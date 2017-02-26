@@ -1,0 +1,32 @@
+html,body,div,p,h1,h2,h3,h4,h5,h6,a,ul,ol,li,dl,dt,dd,
+header, footer,img,
+span,i,em,img,object,form,label,table,caption,tbody,
+tfoot,tr,td,th,iframe,blockquote,pre,abbr,address,cite,
+del,dfn,header,article,aside,canvas,nav,section,summary,
+time,mark,audio,video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	outline: 0;
+	font-size: 100%;
+	vertical-align: baseline;
+	background: transparent;
+}
+html,body {
+	width: 100%;
+	line-height: 1;
+}
+article,aside,canvas,details,figcaption,figure,
+footer,header,hgroup,menu,nav,section,summary { 
+    display:block;
+}
+a {
+	text-decoration: none;
+	
+}
+ul,ol,li {
+	list-style: none;
+}
+a:focus,a:hover {
+	text-decoration: none;
+}
