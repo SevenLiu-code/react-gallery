@@ -13,14 +13,94 @@
 <body id="content" class="content">
 	<script src="./script/data.js"></script>
 	<script type="text/babel">
-		var data=datastr;
-		var GalleryByReactApp = React.createClass({
+		// 创建图片url
+		var imageDatas=(function createImgURL(data){
+					var imgURLData=[];
+					for (var i = 0; i < data.length; i++) {
+						data[i].imgURL="./images/"+data[i].flieName;
+						imgURLData.push(data[i]);
+					};
+					return imgURLData;
+				})(datastr);
+
+		var ImageFigures = React.createClass({
 			render: function(){
+				return (
+						<figure className="img-figure">
+							<img src={this.props.data.imgURL} alt={this.props.data.title}/>
+							<figcaption>
+								<h2 className="img-title">{this.props.data.title}</h2>
+							</figcaption>
+						</figure>
+					);
+				}
+		});
+
+		var GalleryByReactApp = React.createClass({
+			constant: {
+				centerPos:{
+					left: 0,
+					top: 0
+				},
+				hPosRange: {//水平方向的取值范围
+					leftSecX: [0, 0],
+					rightSecX: [0, 0],
+					y: [0, 0]
+				},
+				vPosRange: {//垂直方向的取值范围
+					x: [0, 0],
+					topY: [0, 0]
+				}
+			},
+			getInitialState: function(){
+				
+			},
+			componentDidMount: function(){//组件加载以后为每张图片计算的偏移范围
+				var stageDOM = ReactDOM.findDOMNode(this.refs.stage),
+					figureDOM = ReactDOM.findDOMNode(this.refs.imgFigure0);
+				//拿到舞台的大小
+				var stangeW = stageDOM.scrollWidth,
+					stangeH = stageDOM.scrollHeight,
+					halfStangeW = Math.ceil(stangeW/2),
+					halfStangeH = Math.ceil(stangeH/2);
+				//拿到figure的大小	
+				var	figureW = figureDOM.scrollWidth,
+					figureH = figureDOM.scrollHeight,
+					halfFigureW = Math.ceil(figureW/2),
+					halfFigureH = Math.ceil(figureH/2);
+				//居中图片位置的设定
+				this.constant.centerPos.left = halfStangeW  - halfFigureW;
+				this.constant.centerPos.top = halfStangeH - halfFigureH;
+				//水平方向的取值范围设定
+				this.constant.hPosRange.leftSecX[0] = -halfFigureW;
+				this.constant.hPosRange.leftSecX[1] = halfStangeW - halfFigureW*3;
+				this.constant.hPosRange.rightSecX[0] = halfStangeW + halfFigureW;
+				this.constant.hPosRange.rightSecX[1] = stangeW - halfFigureW;
+				this.constant.hPosRange.y[0] = -halfFigureH;
+				this.constant.hPosRange.y[1] = stangeH - halfFigureH;
+				//垂直方向的取值范围设定
+				this.constant.vPosRange.x[0] = halfStangeW - stangeW;
+				this.constant.vPosRange.x[1] = halfStangeW;
+				this.constant.vPosRange.topY[0] = -halfFigureH;
+				this.constant.vPosRange.topY[1] = halfStangeH-figureH;
+
+			    this.rearrange(0);
+			},
+			rearrange: function(centerIndex){//重新排序图片
+
+			},
+			render: function(){
+				var controllerUnits = [], imgFigures = [];
+				imageDatas.forEach(function(value, index){
+					imgFigures.push(<ImageFigures data={value} ref={"imgFigure" + index} />);
+				});	
 				return(
-					<section className="stage">
+					<section className="stage" ref="stage">
 						<section className="img-sec">
+							{imgFigures}
 						</section>
 						<nav className="controller-nav">
+							{controllerUnits}
 						</nav>
 					</section>
 				);
