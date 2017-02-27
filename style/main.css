@@ -11,8 +11,8 @@ html, body {
 .stage {
 	position: relative;
 	width: 100%;
-	height: 100%;
-	
+	height: auto;
+	margin-top: 50px;
 }
 /*stage-end*/
 
@@ -22,16 +22,18 @@ html, body {
 	width: 100%;
 	height: 680px;
 	background-color: #ddd;
+	overflow: hidden;
 }
 .img-figure {
 	position: absolute;
-	width: 280px;
-	height: auto;
+	width: 240px;
+	height: 380px;
 	padding: 20px;
 	box-sizing: border-box;
 	background-color: #fff;
 }
 .img-figure img {
+	display: block;
 	width: 100%;
 }
 figcaption {

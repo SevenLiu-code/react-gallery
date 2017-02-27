@@ -23,10 +23,20 @@
 					return imgURLData;
 				})(datastr);
 
+		function getRangeRandom(a, b){//生成一个随机数
+			var max = Math.max(a, b),
+				min = Math.min(a, b);
+			return Math.floor(Math.random()*(max - min) + min);	
+		};
+
 		var ImageFigures = React.createClass({
 			render: function(){
+				var styleObj = {};
+				if (this.props.arrange.pos){
+					styleObj = this.props.arrange.pos;
+				};
 				return (
-						<figure className="img-figure">
+						<figure className="img-figure" style={styleObj}>
 							<img src={this.props.data.imgURL} alt={this.props.data.title}/>
 							<figcaption>
 								<h2 className="img-title">{this.props.data.title}</h2>
@@ -53,7 +63,9 @@
 				}
 			},
 			getInitialState: function(){
-				
+				return {
+					imgsArrangeArr: []
+				}
 			},
 			componentDidMount: function(){//组件加载以后为每张图片计算的偏移范围
 				var stageDOM = ReactDOM.findDOMNode(this.refs.stage),
@@ -68,6 +80,7 @@
 					figureH = figureDOM.scrollHeight,
 					halfFigureW = Math.ceil(figureW/2),
 					halfFigureH = Math.ceil(figureH/2);
+					console.log(figureH);
 				//居中图片位置的设定
 				this.constant.centerPos.left = halfStangeW  - halfFigureW;
 				this.constant.centerPos.top = halfStangeH - halfFigureH;
@@ -87,13 +100,73 @@
 			    this.rearrange(0);
 			},
 			rearrange: function(centerIndex){//重新排序图片
+				var imgsArrangeArr = this.state.imgsArrangeArr;//存放的是所有图片的position位置
 
+				var constant = this.constant,
+					centerPos = constant.centerPos,
+					hPosRange = constant.hPosRange,
+					vPosRange = constant.vPosRange,
+					hPosRangeLeftSecX = hPosRange.leftSecX,
+					hPosRangeRightSecX = hPosRange.rightSecX,
+					hPosRangeY = hPosRange.y,
+					vPosRangeX = vPosRange.x,
+					vPosRangeTopY = vPosRange.topY,
+
+					imgsArrangeTopArr = [],
+					topImgNub = Math.round(Math.random()),//取一个或者不取
+					topImgSpliceIndex = 0,
+					imgsArrangeCenterArr = imgsArrangeArr.splice(centerIndex, 1);//取出中心图片的位置信息
+
+					//居中centerIndex的图片
+					imgsArrangeCenterArr[0].pos = centerPos;
+
+					//取出要布局上侧图片的位置信息
+					topImgSpliceIndex = Math.floor(Math.random() * (imgsArrangeArr.length - topImgNub));//随机取一个图片得到的index
+					imgsArrangeTopArr = imgsArrangeArr.splice(topImgSpliceIndex, topImgNub);
+					//布局位于上侧的图片
+					imgsArrangeTopArr.forEach(function(value, index){
+						imgsArrangeTopArr[index].pos = {
+							left: getRangeRandom(vPosRangeX[0], vPosRangeX[1]),
+							top: getRangeRandom(vPosRangeTopY[0], vPosRangeTopY[1])
+						}
+					});
+					for (var i = 0, j = imgsArrangeArr.length, k = j/2; i < j;  i++) {
+						var hPosRangeLORX = null;
+						if (i < k) {//前半部布局在左边,后半部布局在右边,生成随机位置
+							hPosRangeLORX = hPosRangeLeftSecX;
+						}else {
+							hPosRangeLORX = hPosRangeRightSecX;
+						};
+						imgsArrangeArr[i].pos = {
+								left: getRangeRandom(hPosRangeLORX[0], hPosRangeLORX[1]),
+								top: getRangeRandom(hPosRangeY[0], hPosRangeY[1])
+							};
+					};
+					//把上侧图片和中心图片的信息再添加到imgsArrangeArr
+					if (imgsArrangeTopArr && imgsArrangeTopArr[0] ) {
+						imgsArrangeArr.splice(topImgSpliceIndex, 0, imgsArrangeTopArr[0]);
+					};
+					imgsArrangeArr.splice(centerIndex, 0, imgsArrangeCenterArr[0]);
+					//更改state状态，state一当改变，立即重新渲染页面
+					this.setState({
+						imgsArrangeArr : imgsArrangeArr
+					});
 			},
 			render: function(){
 				var controllerUnits = [], imgFigures = [];
+
 				imageDatas.forEach(function(value, index){
-					imgFigures.push(<ImageFigures data={value} ref={"imgFigure" + index} />);
-				});	
+					if (!this.state.imgsArrangeArr[index]) {
+						this.state.imgsArrangeArr[index] = {
+							pos: {
+								left: 0,
+								top: 0
+							}
+						}
+					};
+				  imgFigures.push(<ImageFigures data={value} ref={"imgFigure" + index} arrange={this.state.imgsArrangeArr[index]}/>);
+				}.bind(this));	
+
 				return(
 					<section className="stage" ref="stage">
 						<section className="img-sec">
@@ -104,7 +177,7 @@
 						</nav>
 					</section>
 				);
-	  	  }
+	  	  	}
 		});
 		ReactDOM.render(
 			<GalleryByReactApp />,
