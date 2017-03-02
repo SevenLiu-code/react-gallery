@@ -4,11 +4,11 @@
 	<meta charset="UTF-8">
 	<title>react画廊特效</title>
 	<link rel="stylesheet" type="text/css" href="./style/reset.css">
+	<link rel="stylesheet" type="text/css" href="./style/icon-font.css">
 	<link rel="stylesheet" type="text/css" href="./style/main.css">
 	<script src="https://cdn.bootcss.com/react/15.4.2/react.min.js"></script>
 	<script src="https://cdn.bootcss.com/react/15.4.2/react-dom.min.js"></script>
 	<script src="https://cdn.bootcss.com/babel-standalone/6.22.1/babel.min.js"></script>
-
 </head>
 <body id="content" class="content">
 	<script src="./script/data.js"></script>
@@ -63,10 +63,24 @@
 		});
 		
 		var ControlUnit = React.createClass({//控制组件
+			handleClick: function(){
+				if (this.props.arrange.isCenter) {
+					this.props.inverse();
+				}else{
+					this.props.center();
+				}
+			},
 			render: function(){
-				return <span className="control-item"></span>
+				var controlItemClass = "control-item";
+				if (this.props.arrange.isCenter) {
+					controlItemClass += " icon-undo is-center";
+				};
+				if (this.props.arrange.isInverse) {
+					controlItemClass += " control-inverse";
+				};
+				return <span className={controlItemClass} onClick={this.handleClick}></span>
 			}
-		})
+		});
 		var GalleryByReactApp = React.createClass({
 			constant: { //初始化舞台取值范围对象
 				centerPos:{
@@ -149,6 +163,7 @@
 						},
 						isCenter: true,
 						centerClass: "center-figure" //给中心的图片添加类名
+						
 					};
 
 					for (var i = 0, j = imgsArrangeArr.length, k = j/2; i < j;  i++) {
@@ -164,7 +179,8 @@
 								   top: getRangeRandom(hPosRangeY[0], hPosRangeY[1]),
 								   transform: "rotate(" + getRangeRandom(-30, 30) + "deg)" 
 								},
-								isCenter: false
+								isCenter: false,
+								controlItemClass: ""
 							};
 					};
 					
@@ -188,8 +204,8 @@
 							isCenter: false //figuer是否居中
 						}
 					};
-				  imgFigures.push(<ImageFigures data={value} ref={"imgFigure" + index} arrange={this.state.imgsArrangeArr[index]} inverse={this.inverse(index)} center={this.center(index)}/>);
-				  controllerUnits.push(<ControlUnit />);//添加控制按钮
+				  imgFigures.push(<ImageFigures key={index} data={value} ref={"imgFigure" + index} arrange={this.state.imgsArrangeArr[index]} inverse={this.inverse(index)} center={this.center(index)}/>);
+				  controllerUnits.push(<ControlUnit key={index} arrange={this.state.imgsArrangeArr[index]} inverse={this.inverse(index)} center={this.center(index)}/>);//添加控制按钮
 				}.bind(this));	
 
 				return(
