@@ -109,6 +109,7 @@ figcaption .img-title {
 }
 .control-item.is-center {
 	transform: scale(1);
+	color: #444;
 	border: 2px solid #ddd;
 	background-color: #fff;
 }
