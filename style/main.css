@@ -41,11 +41,10 @@ html, body {
 	transition: all .6s;
 	transform-origin: 25% 50% 0;
 	transform-style: preserve-3d;
-	perspective: 800;
+	-webkit-perspective: 800;
 	background-color: #fff;
 	box-sizing: border-box;
 }
-
 .isInverse .figure-wrap  { transform: rotateY(180deg);}
 .center-figure.figure-wrap .side-front { transform: scale(1.2);}
 .img-figure.isInverse { transform: translate(110px);}
@@ -55,8 +54,6 @@ html, body {
 	padding: 8% 8% 2% 8%;
 	background-color: #fff;
 	-webkit-backface-visibility: hidden;
-/*	transform: rotateY(0deg);*/
-	transform-style: preserve-3d;
 }
 .img-figure img {
 	display: block;
