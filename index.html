@@ -123,6 +123,8 @@
 				this.constant.hPosRange.rightSecX[0] = halfStangeW + halfFigureW;
 				this.constant.hPosRange.rightSecX[1] = stangeW - halfFigureW;
 				this.constant.hPosRange.y[0] = -halfFigureH;
+				this.constant.hPosRange.y[1] = stangeH - halfFigureH;
+				// debugger;
 			    this.rearrange(0);
 			},
 			inverse: function(index){//使用闭包的中心图片翻转函数，在figure渲染时，使用闭包保留住对应的index值，渲染完成后，每个figure上保留对应值的inverse函数，当点击对应figure时，改变对应imgsArrangeArr[index]里的值，setState重新渲染，既而对应figure状态改变
